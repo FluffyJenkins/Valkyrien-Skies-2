@@ -34,6 +34,7 @@ import org.valkyrienskies.core.apigame.world.properties.DimensionId
 import org.valkyrienskies.core.game.ships.ShipObjectServer
 import org.valkyrienskies.core.impl.hooks.VSEvents.TickEndEvent
 import org.valkyrienskies.core.impl.util.expand
+import org.valkyrienskies.mod.common.util.DimensionIdProvider
 import org.valkyrienskies.mod.common.util.MinecraftPlayer
 import org.valkyrienskies.mod.common.util.set
 import org.valkyrienskies.mod.common.util.toJOML
@@ -66,10 +67,8 @@ val ServerLevel.shipObjectWorld
 
 val Level.dimensionId: DimensionId
     get() {
-        val dim = dimension()
-        dim as ResourceKeyAccessor
-
-        return dim.registryName.toString() + ":" + dim.location().toString()
+        this as DimensionIdProvider
+        return dimensionId
     }
 
 fun getResourceKey(dimensionId: DimensionId): ResourceKey<Level> {
@@ -219,6 +218,8 @@ fun Level.isChunkInShipyard(chunkX: Int, chunkZ: Int) =
 
 fun Level.isBlockInShipyard(blockX: Int, blockY: Int, blockZ: Int) =
     shipObjectWorld.isBlockInShipyard(blockX, blockY, blockZ, dimensionId)
+
+fun Level.isBlockInShipyard(pos: BlockPos) = isBlockInShipyard(pos.x, pos.y, pos.z)
 
 fun Level.isBlockInShipyard(x: Double, y: Double, z: Double) =
     isBlockInShipyard(x.toInt(), y.toInt(), z.toInt())
